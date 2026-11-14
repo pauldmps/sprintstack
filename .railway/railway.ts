@@ -1,4 +1,5 @@
 import {
+  bucket,
   defineRailway,
   github,
   postgres,
@@ -10,7 +11,7 @@ import {
 } from 'railway/iac';
 
 export default defineRailway(() => {
-  const sprintstack = github('sprintstack-project/sprintstack', {
+  const sprintstack = github('pauldmps/sprintstack', {
     branch: 'main',
     checkSuites: false,
   });
@@ -34,6 +35,10 @@ export default defineRailway(() => {
     allowOnlineResize: true,
     region: 'europe-west4-drams3a',
     sizeMB: 500,
+  });
+  // Region is immutable after creation; must match the live bucket.
+  const storageBucket = bucket('sprintstack-production-bucket', {
+    region: 'ams',
   });
   const api = service('api', {
     source: sprintstack,
@@ -105,6 +110,14 @@ export default defineRailway(() => {
 
   return project('sprintstack', {
     variables: { managed: true },
-    resources: [Postgres, Redis, api, web, redisVolume, postgresVolume],
+    resources: [
+      Postgres,
+      Redis,
+      api,
+      web,
+      redisVolume,
+      postgresVolume,
+      storageBucket,
+    ],
   });
 });

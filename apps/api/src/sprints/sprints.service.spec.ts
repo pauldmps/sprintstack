@@ -1,18 +1,26 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { SprintsService } from './sprints.service.js';
+import { describe, expect, it, vi } from 'vitest';
+import type { PrismaService } from '../prisma/prisma.service';
+import { SprintsService } from './sprints.service';
 
-describe('SprintsService', () => {
-  let service: SprintsService;
+describe('SprintsService.create', () => {
+  it('creates the sprint without copying time off into capacity adjustments', async () => {
+    const prisma = {
+      sprint: { create: vi.fn().mockResolvedValue({ id: 's1' }) },
+      sprintCapacity: { create: vi.fn() },
+      timeOff: { findMany: vi.fn() },
+    };
+    const service = new SprintsService(prisma as unknown as PrismaService);
+    const startDate = new Date('2026-11-16');
+    const endDate = new Date('2026-11-29');
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [SprintsService],
-    }).compile();
+    await expect(service.create('p1', 'Sprint 26', startDate, endDate)).resolves.toEqual({
+      id: 's1',
+    });
 
-    service = module.get<SprintsService>(SprintsService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(prisma.sprint.create).toHaveBeenCalledWith({
+      data: { projectId: 'p1', name: 'Sprint 26', startDate, endDate },
+    });
+    expect(prisma.timeOff.findMany).not.toHaveBeenCalled();
+    expect(prisma.sprintCapacity.create).not.toHaveBeenCalled();
   });
 });

@@ -18,16 +18,17 @@ import { HealthController } from './health/health.controller';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
+import { ProjectSettingsModule } from './project-settings/project-settings.module.js';
 import { ProjectsModule } from './projects/projects.module';
 import { RedisModule } from './redis/redis.module';
 import { RobotsController } from './robots/robots.controller';
 import { SprintsModule } from './sprints/sprints.module.js';
 import { StorageModule } from './storage/storage.module.js';
+import { TeamModule } from './team/team.module.js';
 import { ClientThrottlerGuard } from './throttler/client-throttler.guard';
 import { UserPreferenceModule } from './user-preference/user-preference.module.js';
 import { UsersModule } from './users/users.module';
 import { WorkItemsModule } from './work-items/work-items.module.js';
-import { ProjectSettingsModule } from './project-settings/project-settings.module.js';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { ProjectSettingsModule } from './project-settings/project-settings.modul
     UserPreferenceModule,
     ActivityModule,
     ProjectSettingsModule,
+    TeamModule,
   ],
   controllers: [AppController, HealthController, RobotsController],
   providers: [

@@ -65,6 +65,12 @@ type Comment {
   workItemId: ID!
 }
 
+input CreateHolidayInput {
+  """ISO date, e.g. 2026-10-30."""
+  date: String!
+  name: String!
+}
+
 input CreateProjectInput {
   description: String
 
@@ -119,6 +125,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Holiday {
+  """ISO date, e.g. 2026-10-30."""
+  date: String!
+  id: ID!
+  name: String!
+}
+
 type Me {
   email: String!
   emailVerified: Boolean!
@@ -134,8 +147,14 @@ enum Methodology {
 }
 
 type Mutation {
+  """Adds someone from the organization to the project. Admins only."""
+  addTeamMember(projectId: ID!, role: ProjectRole! = member, userId: ID!): TeamMember!
+
   """Starts a profile photo upload for the current user"""
   createAvatarUpload(contentType: String!): AvatarUpload!
+
+  """Admins only."""
+  createHoliday(input: CreateHolidayInput!, projectId: ID!): Holiday!
 
   """
   Creates a project in the active organization, with the viewer as its admin.
@@ -144,12 +163,21 @@ type Mutation {
 
   """Create a new sprint"""
   createSprint(endDate: DateTime!, name: String!, projectId: ID!, startDate: DateTime!): Sprint!
+
+  """Books time off for yourself, or for anyone on the project if an admin."""
+  createTimeOff(input: TimeOffInput!, projectId: ID!): TimeOff!
   createUserPreferences(data: CreateUserPreferenceInput!, projectId: ID!): UserPreference!
 
   """
   Create a new work item. The viewer is the reporter; it goes last in its group.
   """
   createWorkItem(input: CreateWorkItemInput!): WorkItem!
+
+  """Admins only. Returns the deleted holiday’s id."""
+  deleteHoliday(id: ID!): ID!
+
+  """Your own entries, or anyone’s if an admin. Returns the id."""
+  deleteTimeOff(id: ID!, projectId: ID!): ID!
 
   """
   Imports work items from a CSV export into a project. AI matches the columns to fields; values are converted and checked before anything is written.
@@ -166,8 +194,21 @@ type Mutation {
   """Sends the user's pushes to this device (its Firebase Installation ID)."""
   registerPushDevice(fid: String!, platform: PushPlatform!): Boolean!
 
+  """
+  Takes someone off the project and returns their id. Admins only; never the last admin.
+  """
+  removeTeamMember(projectId: ID!, userId: ID!): ID!
+
+  """
+  Sets a member’s adjustment for a sprint; zero clears it. Yourself, or anyone if an admin.
+  """
+  setSprintCapacity(input: SetSprintCapacityInput!): SprintCapacity!
+
   """Stops pushes to this device. Call before signing out."""
   unregisterPushDevice(fid: String!): Boolean!
+
+  """Admins only."""
+  updateHoliday(id: ID!, input: UpdateHolidayInput!): Holiday!
 
   """
   Update the current user. Leave a field out to keep it; a null image or jobTitle clears it.
@@ -178,6 +219,14 @@ type Mutation {
     jobTitle: String
     name: String
   ): Me!
+
+  """
+  Changes a member’s role (admins), or title and estimates (admins or themselves).
+  """
+  updateTeamMember(input: UpdateTeamMemberInput!, projectId: ID!): TeamMember!
+
+  """Your own entries, or anyone’s if an admin."""
+  updateTimeOff(id: ID!, input: TimeOffInput!, projectId: ID!): TimeOff!
   updateUserPreferences(data: UpdateUserPreferenceInput!, projectId: ID!): UserPreference!
 
   """Update an existing work item."""
@@ -237,6 +286,12 @@ type Project {
   name: String!
 }
 
+enum ProjectRole {
+  admin
+  member
+  viewer
+}
+
 type ProjectSettings {
   carryOverIncompleteWork: Boolean!
   createdAt: DateTime!
@@ -277,6 +332,11 @@ type Query {
   getUserPreferences(projectId: ID!): UserPreference!
 
   """
+  The project’s holidays, earliest first, optionally between two ISO dates.
+  """
+  holidays(from: String, projectId: ID!, to: String): [Holiday!]!
+
+  """
   Get the current user. Doesn't need an active organization: someone who has signed up from an invite has none until they accept it.
   """
   me: Me!
@@ -299,8 +359,21 @@ type Query {
   """Get a sprint by ID"""
   sprint(id: ID!): Sprint!
 
+  """
+  Hand-made capacity adjustments for the project’s sprints, or one sprint’s.
+  """
+  sprintCapacities(projectId: ID!, sprintId: ID): [SprintCapacity!]!
+
   """Get all sprints"""
   sprints(projectId: ID!): [Sprint!]!
+
+  """The project’s members, by name."""
+  team(projectId: ID!): [TeamMember!]!
+
+  """
+  Time off of the project’s members, optionally only what touches two ISO dates.
+  """
+  teamTimeOff(from: String, projectId: ID!, to: String): [TimeOff!]!
   unreadNotificationCount: Int!
 
   """
@@ -333,6 +406,13 @@ type Query {
   workItemsInBacklog(projectId: ID!): [WorkItem!]!
 }
 
+input SetSprintCapacityInput {
+  """Halves allowed. Zero clears the adjustment."""
+  adjustmentDays: Float!
+  sprintId: ID!
+  userId: ID!
+}
+
 type Sprint {
   capacity: Float
   endDate: DateTime
@@ -343,10 +423,85 @@ type Sprint {
   state: SprintState!
 }
 
+type SprintCapacity {
+  """Halves allowed; negative takes days away."""
+  adjustmentDays: Float!
+  sprintId: ID!
+  userId: ID!
+}
+
 enum SprintState {
   active
   closed
   planned
+}
+
+type TeamMember {
+  email: String!
+
+  """
+  Takes story points. Design and QA don’t, so they have days but no points.
+  """
+  estimates: Boolean!
+
+  """A signed link to their photo."""
+  image: String
+  joinedAt: DateTime!
+  name: String!
+  role: ProjectRole!
+
+  """Job title on this project, falling back to their profile’s job title."""
+  title: String
+  userId: ID!
+}
+
+type TimeOff {
+  """
+  Last day off, included, as an ISO date. Same as startDate for a half day.
+  """
+  endDate: String!
+  id: ID!
+
+  """First day off, as an ISO date."""
+  startDate: String!
+  type: TimeOffType!
+  userId: ID!
+}
+
+input TimeOffInput {
+  """Last day off, included. A half day starts and ends on the same day."""
+  endDate: String!
+
+  """First day off, as an ISO date."""
+  startDate: String!
+  type: TimeOffType!
+
+  """Who is off. Must be on the project."""
+  userId: ID!
+}
+
+enum TimeOffType {
+  half
+  other
+  sick
+  vacation
+}
+
+"""Only the fields sent change."""
+input UpdateHolidayInput {
+  """ISO date."""
+  date: String
+  name: String
+}
+
+"""Only the fields sent change. A null title clears it."""
+input UpdateTeamMemberInput {
+  estimates: Boolean
+
+  """Admins only."""
+  role: ProjectRole
+  title: String
+  userId: ID!
 }
 
 input UpdateUserPreferenceInput {
