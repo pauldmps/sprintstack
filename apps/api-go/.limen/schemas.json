@@ -6,7 +6,7 @@
         {
           "Name": "id",
           "LogicalField": "id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": true,
           "DefaultValue": "",
@@ -17,7 +17,7 @@
         {
           "Name": "user_id",
           "LogicalField": "user_id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": false,
           "DefaultValue": "",
@@ -163,7 +163,7 @@
         {
           "Name": "id",
           "LogicalField": "id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": true,
           "DefaultValue": "",
@@ -226,7 +226,7 @@
         {
           "Name": "id",
           "LogicalField": "id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": true,
           "DefaultValue": "",
@@ -248,7 +248,7 @@
         {
           "Name": "user_id",
           "LogicalField": "user_id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": false,
           "DefaultValue": "",
@@ -338,7 +338,7 @@
         {
           "Name": "id",
           "LogicalField": "id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": true,
           "DefaultValue": "",
@@ -445,7 +445,7 @@
         {
           "Name": "id",
           "LogicalField": "id",
-          "Type": "int64",
+          "Type": "uuid",
           "IsNullable": false,
           "IsPrimaryKey": true,
           "DefaultValue": "",
@@ -532,5 +532,5 @@
       "DisablePublicID": false
     }
   },
-  "useAutoIncrementID": true
+  "useAutoIncrementID": false
 }
