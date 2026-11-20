@@ -8,5 +8,8 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }
