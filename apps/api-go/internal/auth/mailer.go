@@ -1,13 +1,13 @@
 package auth
 
 import (
+	"api-go/internal/config"
 	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -26,8 +26,9 @@ type mailjetResponse struct {
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func SendAuthEmail(ctx context.Context, to, subject, text string) error {
-	apiKey := os.Getenv("MAILJET_API_KEY")
-	apiSecret := os.Getenv("MAILJET_API_SECRET")
+	cfg := config.MustLoad()
+	apiKey := cfg.MailjetApiKey
+	apiSecret := cfg.MailjetApiSecret
 
 	if apiKey == "" || apiSecret == "" {
 		return errors.New("missing mailjet secrets")
@@ -36,8 +37,8 @@ func SendAuthEmail(ctx context.Context, to, subject, text string) error {
 	payload, err := json.Marshal(map[string]any{
 		"Messages": []map[string]any{{
 			"From": map[string]any{
-				"Email": os.Getenv("MAIL_FROM"),
-				"Name":  os.Getenv("MAIL_FROM_NAME"),
+				"Email": cfg.MailFrom,
+				"Name":  cfg.MailFromName,
 			},
 			"To":       []map[string]any{{"Email": to}},
 			"Subject":  subject,
@@ -50,12 +51,14 @@ func SendAuthEmail(ctx context.Context, to, subject, text string) error {
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", mailjetSendUrl, bytes.NewReader(payload))
+	if err != nil {
+		return err
+	}
 
 	req.SetBasicAuth(apiKey, apiSecret)
 	req.Header.Set("Content-Type", "application/json")
 
 	res, err := httpClient.Do(req)
-
 	if err != nil {
 		return err
 	}
@@ -63,7 +66,10 @@ func SendAuthEmail(ctx context.Context, to, subject, text string) error {
 	defer res.Body.Close()
 
 	var result mailjetResponse
-	json.NewDecoder(res.Body).Decode(&result)
+	err = json.NewDecoder(res.Body).Decode(&result)
+	if err != nil {
+		return err
+	}
 
 	ok := res.StatusCode >= 200 && res.StatusCode < 300
 	if !ok || len(result.Messages) == 0 || result.Messages[0].Status != "success" {
