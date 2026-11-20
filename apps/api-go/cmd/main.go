@@ -24,13 +24,13 @@ func main() {
 		})
 	})
 
-	adapter, err := db.InitDB()
+	db, err := db.InitDB()
 
 	if err != nil {
 		log.Fatal("Unable to initialize DB: ", err)
 	}
 
-	err = auth.SetHandlers(adapter, router)
+	err = auth.SetHandlers(db, router)
 	if err != nil {
 		log.Fatal("Unable to set auth handlers: ", err)
 	}

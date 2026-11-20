@@ -15,13 +15,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thecodearcher/limen"
-	"github.com/thecodearcher/limen/adapters/gorm"
+	gormadapter "github.com/thecodearcher/limen/adapters/gorm"
 	credentialpassword "github.com/thecodearcher/limen/plugins/credential-password"
 	"github.com/thecodearcher/limen/plugins/oauth"
 	oauthgithub "github.com/thecodearcher/limen/plugins/oauth-github"
 	organization "github.com/thecodearcher/limen/plugins/organization"
 	passkey "github.com/thecodearcher/limen/plugins/passkey"
 	twofactor "github.com/thecodearcher/limen/plugins/two-factor"
+	"gorm.io/gorm"
 )
 
 type uuidGenerator struct{}
@@ -34,7 +35,7 @@ func (uuidGenerator) GetColumnType() limen.ColumnType {
 	return limen.ColumnTypeUUID
 }
 
-func buildConfig(adapter *gorm.Adapter) *limen.Config {
+func buildConfig(adapter *gormadapter.Adapter) *limen.Config {
 	cfg := config.MustLoad()
 
 	baseURL := cfg.BaseURL
@@ -127,7 +128,7 @@ func buildConfig(adapter *gorm.Adapter) *limen.Config {
 	}
 }
 
-func newService(adapter *gorm.Adapter) (*limen.Limen, error) {
+func newService(adapter *gormadapter.Adapter) (*limen.Limen, error) {
 	authConfig := buildConfig(adapter)
 
 	authSvc, err := limen.New(authConfig)
@@ -139,7 +140,9 @@ func newService(adapter *gorm.Adapter) (*limen.Limen, error) {
 	return authSvc, nil
 }
 
-func SetHandlers(adapter *gorm.Adapter, router *gin.Engine) error {
+func SetHandlers(db *gorm.DB, router *gin.Engine) error {
+	adapter := gormadapter.New(db)
+
 	authSvc, err := newService(adapter)
 
 	if err != nil {

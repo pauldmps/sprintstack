@@ -4,13 +4,11 @@ import (
 	"api-go/internal/config"
 	"strconv"
 
-	gormadapter "github.com/thecodearcher/limen/adapters/gorm"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func InitDB() (*gormadapter.Adapter, error) {
+func InitDB() (*gorm.DB, error) {
 	cfg := config.MustLoad()
 
 	gormdb, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
@@ -30,7 +28,5 @@ func InitDB() (*gormadapter.Adapter, error) {
 
 	sqlDB.SetMaxOpenConns(maxConn)
 
-	adapter := gormadapter.New(gormdb)
-
-	return adapter, nil
+	return gormdb, nil
 }
