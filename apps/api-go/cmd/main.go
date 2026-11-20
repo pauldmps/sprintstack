@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/thecodearcher/limen"
 )
 
 func main() {
@@ -19,24 +18,19 @@ func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 
-	router.GET("ping", func (c *gin.Context) {
+	router.GET("ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	
 
-	adapter := db.InitDB()
+	adapter, err := db.InitDB()
 
-	authConfig := auth.GetAuthConfig(adapter)
-
-	authSvc, err := limen.New(authConfig)
 	if err != nil {
-		log.Fatalf("Failed to create limen: %v", err)
+		log.Fatal("Unable to initalize DB", err)
 	}
 
-	authHandler := gin.WrapH(authSvc.Handler())
-	router.Any("/auth/*path", authHandler)
+	log.Fatal(auth.SetHandlers(adapter, router))
 
 	log.Fatal(router.Run())
 }

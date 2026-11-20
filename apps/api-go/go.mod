@@ -3,6 +3,21 @@ module api-go
 go 1.27.4
 
 require (
+	github.com/gin-gonic/gin v1.12.0
+	github.com/joho/godotenv v1.5.1
+	github.com/thecodearcher/limen v0.2.4
+	github.com/thecodearcher/limen/adapters/gorm v0.2.2
+	github.com/thecodearcher/limen/plugins/credential-password v0.2.3
+	github.com/thecodearcher/limen/plugins/oauth v0.2.2
+	github.com/thecodearcher/limen/plugins/oauth-github v0.2.3
+	github.com/thecodearcher/limen/plugins/organization v0.1.2
+	github.com/thecodearcher/limen/plugins/passkey v0.1.1
+	github.com/thecodearcher/limen/plugins/two-factor v0.2.2
+	gorm.io/driver/postgres v1.6.3
+	gorm.io/gorm v1.31.2
+)
+
+require (
 	cel.dev/expr v0.25.2 // indirect
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/auth v0.20.0 // indirect
@@ -67,7 +82,6 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.3 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.16 // indirect
 	github.com/gin-contrib/sse v1.2.1 // indirect
-	github.com/gin-gonic/gin v1.12.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -113,7 +127,6 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/pp v2.3.0+incompatible // indirect
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
@@ -138,6 +151,7 @@ require (
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.0 // indirect
 	github.com/nakagami/firebirdsql v0.0.0-20190310045651-3c02a58cfed8 // indirect
 	github.com/neo4j/neo4j-go-driver v1.8.1-0.20200803113522-b626aa943eba // indirect
+	github.com/nxadm/tail v1.4.11 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.16 // indirect
@@ -152,15 +166,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/snowflakedb/gosnowflake v1.6.19 // indirect
 	github.com/spiffe/go-spiffe/v2 v2.8.1 // indirect
-	github.com/thecodearcher/limen v0.2.4 // indirect
-	github.com/thecodearcher/limen/adapters/gorm v0.2.2 // indirect
 	github.com/thecodearcher/limen/cmd/limen v0.2.2 // indirect
-	github.com/thecodearcher/limen/plugins/credential-password v0.2.3 // indirect
-	github.com/thecodearcher/limen/plugins/oauth v0.2.2 // indirect
-	github.com/thecodearcher/limen/plugins/oauth-github v0.2.3 // indirect
-	github.com/thecodearcher/limen/plugins/organization v0.1.2 // indirect
-	github.com/thecodearcher/limen/plugins/passkey v0.1.1 // indirect
-	github.com/thecodearcher/limen/plugins/two-factor v0.2.2 // indirect
 	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.2 // indirect
@@ -206,8 +212,6 @@ require (
 	google.golang.org/grpc v1.82.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	gorm.io/driver/postgres v1.6.3 // indirect
-	gorm.io/gorm v1.31.2 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/b v1.0.0 // indirect
 	modernc.org/cc/v3 v3.36.3 // indirect

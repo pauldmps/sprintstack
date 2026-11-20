@@ -1,8 +1,7 @@
 package db
 
 import (
-	"log"
-	"os"
+	"api-go/internal/config"
 	"strconv"
 
 	gormadapter "github.com/thecodearcher/limen/adapters/gorm"
@@ -11,27 +10,27 @@ import (
 	"gorm.io/gorm"
 )
 
+func InitDB() (*gormadapter.Adapter, error) {
+	cfg := config.MustLoad()
 
-func InitDB() *gormadapter.Adapter {
-dsn := os.Getenv("DATABASE_URL")
-	gormdb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	gormdb, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to open database: %v", err)
+		return nil, err
 	}
-	
+
 	sqlDB, err := gormdb.DB()
 	if err != nil {
-		log.Fatalf("Failed to get underlying DB: %v", err)
+		return nil, err
 	}
 
-	maxConn, err := strconv.Atoi(os.Getenv("DATABASE_POOL_MAX"))
+	maxConn, err := strconv.Atoi(cfg.DatabasePoolMax)
 	if err != nil {
-		log.Fatalf("DATABASE_POOL_MAX env variable is not set or is invalid: %v", err)
+		return nil, err
 	}
-	
+
 	sqlDB.SetMaxOpenConns(maxConn)
-	
+
 	adapter := gormadapter.New(gormdb)
 
-	return adapter
+	return adapter, nil
 }
