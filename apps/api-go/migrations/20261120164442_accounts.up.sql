@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS accounts (
-  id BIGSERIAL,
-  user_id BIGINT NOT NULL,
+  id UUID,
+  user_id UUID NOT NULL,
   provider VARCHAR(255) NOT NULL,
   provider_account_id VARCHAR(255),
   access_token TEXT NOT NULL,

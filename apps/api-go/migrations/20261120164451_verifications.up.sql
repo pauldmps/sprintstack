@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS verifications (
-  id BIGSERIAL,
+  id UUID,
   subject VARCHAR(255) NOT NULL,
   value TEXT NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,

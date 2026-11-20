@@ -157,6 +157,544 @@
       "PluginName": "",
       "DisablePublicID": false
     },
+    "organization_invitations": {
+      "TableName": "organization_invitations",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "organization_id",
+          "LogicalField": "organization_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "inviter_id",
+          "LogicalField": "inviter_id",
+          "Type": "uuid",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "email",
+          "LogicalField": "email",
+          "Type": "string",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "roles",
+          "LogicalField": "roles",
+          "Type": "text",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "status",
+          "LogicalField": "status",
+          "Type": "string",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "token",
+          "LogicalField": "token",
+          "Type": "text",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "expires_at",
+          "LogicalField": "expires_at",
+          "Type": "time.Time",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "created_at",
+          "LogicalField": "created_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        },
+        {
+          "Name": "updated_at",
+          "LogicalField": "updated_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_organization_invitations_token",
+          "Columns": [
+            "token"
+          ],
+          "Unique": true
+        },
+        {
+          "Name": "idx_organization_invitations_org",
+          "Columns": [
+            "organization_id"
+          ],
+          "Unique": false
+        },
+        {
+          "Name": "idx_organization_invitations_email",
+          "Columns": [
+            "email"
+          ],
+          "Unique": false
+        }
+      ],
+      "ForeignKeys": [
+        {
+          "Name": "fk_organization_invitations_organization",
+          "Column": "organization_id",
+          "ReferencedSchema": "organizations",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        },
+        {
+          "Name": "fk_organization_invitations_inviter",
+          "Column": "inviter_id",
+          "ReferencedSchema": "users",
+          "ReferencedField": "id",
+          "OnDelete": "SET NULL",
+          "OnUpdate": "CASCADE"
+        }
+      ],
+      "SchemaName": "organization_invitations",
+      "Extends": "",
+      "PluginName": "organization",
+      "DisablePublicID": false
+    },
+    "organization_member_roles": {
+      "TableName": "organization_member_roles",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "member_id",
+          "LogicalField": "member_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "organization_id",
+          "LogicalField": "organization_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "role",
+          "LogicalField": "role",
+          "Type": "string",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "created_at",
+          "LogicalField": "created_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_organization_member_roles_member_role",
+          "Columns": [
+            "member_id",
+            "role"
+          ],
+          "Unique": true
+        }
+      ],
+      "ForeignKeys": [
+        {
+          "Name": "fk_organization_member_roles_member",
+          "Column": "member_id",
+          "ReferencedSchema": "organization_members",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        },
+        {
+          "Name": "fk_organization_member_roles_organization",
+          "Column": "organization_id",
+          "ReferencedSchema": "organizations",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        }
+      ],
+      "SchemaName": "organization_member_roles",
+      "Extends": "",
+      "PluginName": "organization",
+      "DisablePublicID": true
+    },
+    "organization_members": {
+      "TableName": "organization_members",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "organization_id",
+          "LogicalField": "organization_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "user_id",
+          "LogicalField": "user_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "created_at",
+          "LogicalField": "created_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        },
+        {
+          "Name": "updated_at",
+          "LogicalField": "updated_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_organization_members_org_user",
+          "Columns": [
+            "organization_id",
+            "user_id"
+          ],
+          "Unique": true
+        }
+      ],
+      "ForeignKeys": [
+        {
+          "Name": "fk_organization_members_organization",
+          "Column": "organization_id",
+          "ReferencedSchema": "organizations",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        },
+        {
+          "Name": "fk_organization_members_user",
+          "Column": "user_id",
+          "ReferencedSchema": "users",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        }
+      ],
+      "SchemaName": "organization_members",
+      "Extends": "",
+      "PluginName": "organization",
+      "DisablePublicID": false
+    },
+    "organizations": {
+      "TableName": "organizations",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "name",
+          "LogicalField": "name",
+          "Type": "string",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "slug",
+          "LogicalField": "slug",
+          "Type": "string",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "logo",
+          "LogicalField": "logo",
+          "Type": "string",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "metadata",
+          "LogicalField": "metadata",
+          "Type": "map[string]any",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "created_at",
+          "LogicalField": "created_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        },
+        {
+          "Name": "updated_at",
+          "LogicalField": "updated_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_organizations_slug",
+          "Columns": [
+            "slug"
+          ],
+          "Unique": true
+        }
+      ],
+      "ForeignKeys": [],
+      "SchemaName": "organizations",
+      "Extends": "",
+      "PluginName": "organization",
+      "DisablePublicID": false
+    },
+    "passkeys": {
+      "TableName": "passkeys",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "user_id",
+          "LogicalField": "user_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "name",
+          "LogicalField": "name",
+          "Type": "string",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "credential_id",
+          "LogicalField": "credential_id",
+          "Type": "text",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "public_key",
+          "LogicalField": "public_key",
+          "Type": "text",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "sign_count",
+          "LogicalField": "sign_count",
+          "Type": "int64",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "0",
+          "Tags": {}
+        },
+        {
+          "Name": "transports",
+          "LogicalField": "transports",
+          "Type": "text",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "aaguid",
+          "LogicalField": "aaguid",
+          "Type": "string",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "backup_eligible",
+          "LogicalField": "backup_eligible",
+          "Type": "bool",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "false",
+          "Tags": {}
+        },
+        {
+          "Name": "backup_state",
+          "LogicalField": "backup_state",
+          "Type": "bool",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "false",
+          "Tags": {}
+        },
+        {
+          "Name": "last_used_at",
+          "LogicalField": "last_used_at",
+          "Type": "time.Time",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "created_at",
+          "LogicalField": "created_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        },
+        {
+          "Name": "updated_at",
+          "LogicalField": "updated_at",
+          "Type": "time.Time",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "@now()",
+          "Tags": null
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_passkeys_credential_id",
+          "Columns": [
+            "credential_id"
+          ],
+          "Unique": true
+        },
+        {
+          "Name": "idx_passkeys_user_id",
+          "Columns": [
+            "user_id"
+          ],
+          "Unique": false
+        }
+      ],
+      "ForeignKeys": [
+        {
+          "Name": "fk_passkeys_user",
+          "Column": "user_id",
+          "ReferencedSchema": "users",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        }
+      ],
+      "SchemaName": "passkeys",
+      "Extends": "",
+      "PluginName": "passkey",
+      "DisablePublicID": false
+    },
     "rate_limits": {
       "TableName": "rate_limits",
       "Columns": [
@@ -299,6 +837,15 @@
           "Tags": {
             "json": "metadata"
           }
+        },
+        {
+          "Name": "active_organization_id",
+          "LogicalField": "active_organization_id",
+          "Type": "uuid",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
         }
       ],
       "Indexes": [
@@ -313,6 +860,13 @@
           "Name": "idx_sessions_user_id",
           "Columns": [
             "user_id"
+          ],
+          "Unique": false
+        },
+        {
+          "Name": "idx_sessions_active_organization",
+          "Columns": [
+            "active_organization_id"
           ],
           "Unique": false
         }
@@ -330,6 +884,70 @@
       "SchemaName": "sessions",
       "Extends": "",
       "PluginName": "",
+      "DisablePublicID": false
+    },
+    "two_factors": {
+      "TableName": "two_factors",
+      "Columns": [
+        {
+          "Name": "id",
+          "LogicalField": "id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": true,
+          "DefaultValue": "",
+          "Tags": null
+        },
+        {
+          "Name": "user_id",
+          "LogicalField": "user_id",
+          "Type": "uuid",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "secret",
+          "LogicalField": "secret",
+          "Type": "string",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        },
+        {
+          "Name": "backup_codes",
+          "LogicalField": "backup_codes",
+          "Type": "text",
+          "IsNullable": true,
+          "IsPrimaryKey": false,
+          "DefaultValue": "",
+          "Tags": {}
+        }
+      ],
+      "Indexes": [
+        {
+          "Name": "idx_two_factors_user_id",
+          "Columns": [
+            "user_id"
+          ],
+          "Unique": true
+        }
+      ],
+      "ForeignKeys": [
+        {
+          "Name": "fk_two_factors_users_user_id",
+          "Column": "user_id",
+          "ReferencedSchema": "users",
+          "ReferencedField": "id",
+          "OnDelete": "CASCADE",
+          "OnUpdate": "CASCADE"
+        }
+      ],
+      "SchemaName": "two_factors",
+      "Extends": "",
+      "PluginName": "two-factor",
       "DisablePublicID": false
     },
     "users": {
@@ -422,6 +1040,15 @@
           "Tags": {
             "json": "updated_at"
           }
+        },
+        {
+          "Name": "two_factor_enabled",
+          "LogicalField": "two_factor_enabled",
+          "Type": "bool",
+          "IsNullable": false,
+          "IsPrimaryKey": false,
+          "DefaultValue": "false",
+          "Tags": {}
         }
       ],
       "Indexes": [

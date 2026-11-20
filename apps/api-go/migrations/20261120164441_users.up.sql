@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-  id BIGSERIAL,
+  id UUID,
   email VARCHAR(255) NOT NULL,
   password VARCHAR(255),
   email_verified_at TIMESTAMPTZ,
@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_name VARCHAR(255),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL,
+  two_factor_enabled BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX idx_users_email ON users (email);

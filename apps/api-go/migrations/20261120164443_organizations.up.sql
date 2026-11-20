@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS organizations (
+  id UUID,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL,
+  logo VARCHAR(255),
+  metadata JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+CREATE UNIQUE INDEX idx_organizations_slug ON organizations (slug);

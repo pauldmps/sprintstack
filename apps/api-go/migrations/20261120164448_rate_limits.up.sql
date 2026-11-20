@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS rate_limits (
-  id BIGSERIAL,
+  id UUID,
   key VARCHAR(255) NOT NULL,
   count INTEGER NOT NULL,
   last_request_at BIGINT NOT NULL,
