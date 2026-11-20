@@ -1,4 +1,4 @@
-package auth
+package mailer
 
 import (
 	"api-go/internal/config"
@@ -27,8 +27,8 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func SendAuthEmail(ctx context.Context, to, subject, text string) error {
 	cfg := config.MustLoad()
-	apiKey := cfg.MailjetApiKey
-	apiSecret := cfg.MailjetApiSecret
+	apiKey := cfg.MailjetAPIKey
+	apiSecret := cfg.MailjetAPISecret
 
 	if apiKey == "" || apiSecret == "" {
 		return errors.New("missing mailjet secrets")

@@ -2,6 +2,7 @@ package auth
 
 import (
 	"api-go/internal/config"
+	"api-go/internal/mailer"
 	"context"
 	"crypto/rand"
 	"fmt"
@@ -70,7 +71,9 @@ func buildConfig(adapter *gorm.Adapter) *limen.Config {
 			limen.WithHTTPSessionCookieName("session"),
 			limen.WithHTTPDisabledPaths([]string{"verify-email"})),
 		Plugins: []limen.Plugin{
-			credentialpassword.New(),
+			credentialpassword.New(
+				credentialpassword.WithRequireEmailVerification(true),
+			),
 			organization.New(),
 			twofactor.New(
 				twofactor.WithTOTP(
@@ -95,7 +98,7 @@ func buildConfig(adapter *gorm.Adapter) *limen.Config {
 			Enabled: true,
 		},
 		Email: limen.NewDefaultEmailConfig(
-			limen.WithEmailVerification(limen.WithAutoSignInAfterVerification(),
+			limen.WithEmailVerification(
 				limen.WithEmailVerificationExpiration(10*time.Minute),
 				limen.WithEmailVerificationTokenGenerator(func(u *limen.User) (string, error) {
 					n, err := rand.Int(rand.Reader, big.NewInt(1_000_000))
@@ -110,7 +113,7 @@ func buildConfig(adapter *gorm.Adapter) *limen.Config {
 						ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 						defer cancel()
 
-						err := SendAuthEmail(ctx,
+						err := mailer.SendAuthEmail(ctx,
 							email,
 							"Your Sprintstack code",
 							fmt.Sprintf("Your verification code is %s. It expires in 10 minutes.", token))
