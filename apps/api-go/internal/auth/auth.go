@@ -151,11 +151,8 @@ func SetHandlers(db *gorm.DB, router *gin.Engine) error {
 
 	authHandler := gin.WrapH(authSvc.Handler())
 
-	router.POST("/auth/verify-email-otp", func(ctx *gin.Context) { verifyEmailOtp(ctx, db, authSvc) })
-	router.NoRoute(func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/auth/") {
-			authHandler(c)
-		}
-	})
+	router.POST("/verify-email-otp", func(ctx *gin.Context) { verifyEmailOtp(ctx, db, authSvc) })
+	router.Any("/auth/*action", func(ctx *gin.Context) { authHandler(ctx) })
+
 	return err
 }
