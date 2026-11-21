@@ -5,9 +5,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thecodearcher/limen"
+	"gorm.io/gorm"
 )
 
-func verifyEmailOtp(c *gin.Context, l *limen.Limen) {
+func verifyEmailOtp(c *gin.Context, db *gorm.DB, l *limen.Limen) {
 	session, err := l.GetSession(c.Request)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})

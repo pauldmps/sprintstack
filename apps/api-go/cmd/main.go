@@ -3,6 +3,7 @@ package main
 import (
 	"api-go/internal/auth"
 	"api-go/internal/db"
+	"api-go/internal/user"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,10 @@ func main() {
 	if err != nil {
 		log.Fatal("Unable to set auth handlers: ", err)
 	}
+
+	userStore := user.NewUserStore(db)
+	userService := user.NewUserService(userStore)
+	user.SetHandlers(router, userService)
 
 	err = router.Run()
 	if err != nil {
