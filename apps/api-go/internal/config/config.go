@@ -10,6 +10,7 @@ type Config struct {
 	GitHubClientID     string
 	GitHubClientSecret string
 	AppName            string
+	AppScheme          string
 	MailjetAPIKey      string
 	MailjetAPISecret   string
 	MailFrom           string
@@ -25,6 +26,7 @@ func MustLoad() Config {
 		GitHubClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		GitHubClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		AppName:            os.Getenv("APP_NAME"),
+		AppScheme:          os.Getenv("APP_SCHEME"),
 		MailjetAPIKey:      os.Getenv("MAILJET_API_KEY"),
 		MailjetAPISecret:   os.Getenv("MAILJET_API_SECRET"),
 		MailFrom:           os.Getenv("MAIL_FROM"),

@@ -84,6 +84,7 @@ func buildConfig(adapter *gormadapter.Adapter) *limen.Config {
 					twofactor.WithBackupCodesCount(8),
 					twofactor.WithBackupCodesLength(16),
 				),
+				twofactor.WithOTP(twofactor.WithOTPEnabled(false)),
 			),
 			oauth.New(
 				oauth.WithProviders(oauthgithub.New(
@@ -93,6 +94,7 @@ func buildConfig(adapter *gormadapter.Adapter) *limen.Config {
 			passkey.New(
 				passkey.WithRPName(appName),
 				passkey.WithAllowInternalUserIDAsHandle(true),
+				passkey.WithAllowedOrigins(cfg.BaseURL, cfg.AppScheme),
 			),
 		},
 		CLI: &limen.CLIConfig{
